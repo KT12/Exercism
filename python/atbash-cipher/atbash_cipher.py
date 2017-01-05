@@ -13,14 +13,14 @@ Created on Mon Aug 22 15:00:09 2016
 #
 #==============================================================================
 
-from string import punctuation
+from string import punctuation, ascii_lowercase
 
-alph = 'abcdefghijklmnopqrstuvwxyz'
+alph = ascii_lowercase
 # Reverse the alphabet for cipher
 teba = alph[::-1]
 
 def encode(msg):
-     # Punctuation ignored in cipher
+    # Punctuation ignored in cipher
     cipher = str.maketrans(alph, teba, punctuation)
     # Lowercase, remove whitespace
     secret = msg.lower().replace(' ','').translate(cipher)
