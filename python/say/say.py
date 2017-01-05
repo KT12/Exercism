@@ -8,6 +8,8 @@ Write a program that will take a number from 0 to 999,999,999,999 and
 spell out that number in English.
 """
 
+# Need to fix error for 1000002
+
 # Input num should be int type
 
 def say(num):
@@ -19,7 +21,7 @@ def say(num):
              2 : ' million ',
              1 : ' thousand ',
              0 : ''}
-    s_num = str(num)
+    s_num = str(int(num))
     dig = len(s_num)
     segs, lead = divmod(dig, 3)
     
@@ -28,18 +30,30 @@ def say(num):
     if lead == 0:
         leading = ''
     elif lead == 1:
-        leading = digits(s_num[0]) + place[segs]
+        leading = digits[s_num[0]] + place[segs]
     elif lead == 2:
         leading = tens(s_num[0:2] + place[segs])
         
     trailing = ''
     
-    for k in range((dig - 1), 0, -1):
-        s = 0
-        trailing = hundreds[s:s+3] + place[k]
-        s += 3
+    s = lead
+    for k in range((segs), 0, -1):
+        if s_num[s:s+3] != '000':
+            trailing = trailing + hundreds(s_num[s:s+3]) + place[k-1]
+            print('trailing')
+            print(trailing)
+            s += 3
+        else:
+            s += 3
     
-    return leading + trailing
+    if trailing and leading:
+        return (leading + trailing).strip()
+        
+    elif not trailing:
+        return (leading).strip()
+    else:
+        return (trailing).strip()
+    
     
 # Below function takes in 3 digit string number, returns the English equivalent
 digits = {'9': 'nine',
@@ -54,12 +68,16 @@ digits = {'9': 'nine',
           '0': ''}
           
 def hundreds(s_num):
+    print('s_num')
+    print(s_num)
     if s_num == '000':
         return ''
-    elif s_num[0] == 0:
+    elif s_num[0] == '0':
         return tens(s_num)
+    elif s_num [-2:] == '00':
+        return digits[s_num[0]] + ' hundred'
     else:
-        return digits[s_num[0]] + ' hundred and' + tens(s_num)
+        return digits[s_num[0]] + ' hundred and ' + tens(s_num)
 
 def tens(s_num):
     tens_place = {'9': 'ninety',
@@ -84,9 +102,11 @@ def tens(s_num):
              '10': 'ten'}
     if s_num[1:] == '00':
         return ''
-    elif s_num[1] == '1':
-        return teens[s_num[1]]
-    elif s_num[1] == '0':
-        return digits[s_num[2]]
+    elif s_num[-2] == '1':
+        return teens[s_num[-2:]]
+    elif s_num[-2] == '0':
+        return digits[s_num[-1]]
+    elif s_num[-1] == '0':
+        return tens_place[s_num[-2]]
     else:
-        return tens_place[s_num[1]] + '-' + digits[s_num[2]]
+        return tens_place[s_num[-2]] + '-' + digits[s_num[-1]]
