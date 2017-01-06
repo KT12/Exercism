@@ -6,19 +6,22 @@ Created on Fri Jan  6 12:36:02 2017
 @author: ktt
 """
 
+# Passed all tests using defaultdict instead of list of tuples
+
+from collections import defaultdict
+
 class School():
     
     def __init__(self, name):
         self.name = name
-        self.student_list = []
+        self.student_dict = defaultdict(set)
         
     def add(self, s_name, g):
-        self.student_list.append((g, s_name))
+        self.student_dict[g].add(s_name)
     
     def grade(self, num):
-        return tuple(self.student_list[k][1] for k in
-                     range(len(self.student_list))
-                     if self.student_list[k][0] == num)
+        return self.student_dict[num]
     
     def sort(self):
-        return sorted(self.student_list)
+        return sorted((g, tuple(sorted(s_name))) for g, s_name in
+                      self.student_dict.items())
