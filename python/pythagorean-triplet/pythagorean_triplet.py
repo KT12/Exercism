@@ -13,16 +13,19 @@ Created on Sat Jan  7 19:22:27 2017
 import math
 
 def primitive_triplets(b):
+    # b must be divisible by 4
     if b%4 != 0:
         raise ValueError
     else:
         triplets = []
         for m in range(1, b//2 + 2):
             for n in range(1, m+2):
+                # check for necessary conditions
                 if b == (2*m*n) and m>n and (m-n)%2 == 1 and math.gcd(m, n)==1:
                     a = m**2 - n**2
                     c = m**2 + n**2
                     if is_triplet([a,b,c]):
+                        # cannot use a,b,c as tuple, this will mess up the func
                         d,e,f = sorted([a, b, c])
                         triplets.append((d,e,f))
     return set(triplets)
