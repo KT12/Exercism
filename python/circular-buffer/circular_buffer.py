@@ -10,30 +10,43 @@ Created on Thu Jan 12 20:33:31 2017
 # Reading clears the read items from the buffer
 # Also properly raise BufferFullException, BufferEmptyException
 
+import random
+
 class CircularBuffer(object):
     
     def __init__(self, n):
         self.n = n # n is predefined length of buffer
-        self.buffer = ['' for _ in range(self.n)] # creates blank list of len n
+        self.buffer = ['' for _ in range(self.n)] # blank list of len n
+        self.cursor = random.randrange(self.n) # buffer starts at random point
     
     def clear(self):
         self.buffer = ['' for _ in range(self.n)]
-        return self.buffer
         
     def write(self, ss):
-        if '' in self.buffer:
-            while ss not in self.buffer:
-                for k in range(len(self.buffer)):
-                    if self.buffer[k] == '':
-                        self.buffer[k] = ss
-            self.buffer.sort()
+        if self.buffer[self.cursor] == '':
+            self.buffer[self.cursor] = ss
+            self.cursor = (self.cursor + 1) % self.n
         else:
-            raise Exception('BufferFullException')
+            raise BufferFullException
     
     def read(self):
         if self.buffer == ['' for _ in range(self.n)]:
-            raise Exception('BufferEmptyException')
+            raise BufferEmptyException
         else:
-            for k in self.buffer:
-                if k != '':
-                    return k
+            if self.buffer[self.cursor] != '':
+                out = self.buffer[self.cursor]
+                self.buffer[self.cursor] = ''
+                return out
+            else:
+                self.cursor = (self.cursor + 1) % self.n
+                return self.read()  # recursively read until data found
+    
+    def overwrite(self, ss):
+        self.buffer[self.cursor] = ss
+        self.cursor = (self.cursor + 1) % self.n
+
+class BufferFullException(Exception):
+    pass
+
+class BufferEmptyException(Exception):
+    pass
