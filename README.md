@@ -2,4 +2,6 @@
 
 Solutions to exercises from [Exercism](http://exercism.io/)
 
-Python 3.5
+Organized by programming language
+
+Author: [@KT12](https://github.com/KT12)
